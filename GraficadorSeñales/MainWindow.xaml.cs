@@ -11,7 +11,6 @@ namespace GraficadorSeñales
     {
         double amplitudMaxima = 1;
         Señal señal;
-        Señal segundaSeñal;
         Señal señalResultado;
 
         public MainWindow()
@@ -28,7 +27,6 @@ namespace GraficadorSeñales
 
 
             double umbral = double.Parse(txtUmbral.Text);
-            double umbral_segundaSeñal = double.Parse(txtUmbral_SegundaSeñal.Text);
             
 
             //PRIMERA SEÑAL
@@ -73,52 +71,6 @@ namespace GraficadorSeñales
                     break;
 
             }
-
-            //SEGUNDA SEÑAL
-            switch (cbTipoSeñal_SegundaSeñal.SelectedIndex)
-            {
-                //Señal Senoidal
-                case 0:
-                    double amplitud = double.Parse(((ConfiguracionSeñalSenoidal)
-                        panelConfiguracion_SegundaSeñal.Children[0]).txtAmplitud.Text);
-
-                    double fase = double.Parse(((ConfiguracionSeñalSenoidal)
-                        panelConfiguracion_SegundaSeñal.Children[0]).txtFase.Text);
-
-                    double frecuencia = double.Parse(((ConfiguracionSeñalSenoidal)
-                        panelConfiguracion_SegundaSeñal.Children[0]).txtFrecuencia.Text);
-
-                    segundaSeñal = new SeñalSenoidal(amplitud, fase, frecuencia, umbral); //constructor
-
-                    break;
-
-                //Rampa
-                case 1:
-                    segundaSeñal = new SeñalRampa();
-
-                    break;
-
-                //Exponencial
-                case 2:
-                    double alpha = double.Parse(((ConfiguracionSeñalExponencial)
-                        panelConfiguracion_SegundaSeñal.Children[0]).txtAlpha.Text);
-
-                    segundaSeñal = new SeñalExponencial(alpha, umbral);
-                    break;
-
-                //Rectangular
-                case 3:
-                    segundaSeñal = new SeñalRectangular();
-                    break;
-
-                default:
-
-                    segundaSeñal = null;
-
-                    break;
-
-            }
-
             
             //---------------------------------PRIMERA SEÑAL------------------------------------------------------//
             señal.TiempoInicial = tiempoInicial;
@@ -136,41 +88,13 @@ namespace GraficadorSeñales
 
             //Truncar
             //señal.truncar(umbral);
-
-
-
-            //------------------------------------SEGUNDA SEÑAL--------------------------------------------------//
-            segundaSeñal.TiempoInicial = tiempoInicial;
-            segundaSeñal.TiempoFinal = tiempoFinal;
-            segundaSeñal.FrecuenciaMuestreo = frecuenciaMuestreo;
-            segundaSeñal.construirSeñalDigital();
-
-            //Escalar
-            double factorEscala_segundaSeñal = double.Parse(txtFactorEscalaAmplitud_SegundaSeñal.Text);
-            segundaSeñal.escalar(factorEscala_segundaSeñal);
-
-            //Desplazamiento 
-            double desplazar_segundaSeñal = double.Parse(txtDesplazamientoY_SegundaSeñal.Text);
-            segundaSeñal.desplazarY(desplazar_segundaSeñal);
-
-            //Truncar
-            //segundaSeñal.truncar(umbral_segundaSeñal);
-           
-
-
+            
             señal.actualizarAmplitudMaxima();
-            segundaSeñal.actualizarAmplitudMaxima();
-
+            
             amplitudMaxima = señal.AmplitudMaxima;
-            if(segundaSeñal.AmplitudMaxima > amplitudMaxima)
-            {
-                amplitudMaxima = segundaSeñal.AmplitudMaxima;
-
-            }
-
+           
             plnGrafica.Points.Clear();
-            plnGrafica2.Points.Clear();
-
+            
             lblAmplitudMaximaY.Text = amplitudMaxima.ToString("F");
             lblAmplitudMaximaNegativaY.Text = "-" + amplitudMaxima.ToString("F");
 
@@ -187,21 +111,7 @@ namespace GraficadorSeñales
                 }
                 
             }
-
-            //SEGUNDA SEÑAL
-            if (segundaSeñal != null)
-            {
-                //Recorre todos los elementos de una coleccion o arreglo
-                foreach (Muestra muestra in segundaSeñal.Muestras)
-                {
-                    plnGrafica2.Points.Add(new Point((muestra.X - tiempoInicial) * scrContenedor.Width, (muestra.Y /
-                        amplitudMaxima * ((scrContenedor.Height / 2.0) - 30) * -1) +
-                        (scrContenedor.Height / 2)));
-
-                }
-
-            }
-
+            
             plnEjeX.Points.Clear();
             //Punto del principio
             plnEjeX.Points.Add(new Point(0, (scrContenedor.Height / 2)));
@@ -218,34 +128,7 @@ namespace GraficadorSeñales
                 ((scrContenedor.Height / 2.0) - 30) * -1) + (scrContenedor.Height / 2)));
                         
         }
-
-        private void btnGraficarRampa_Click(object sender, RoutedEventArgs e)
-        {
-            double tiempoInicial = double.Parse(txtTiempoInicial.Text);
-            double tiempoFinal = double.Parse(txtTiempoFinal.Text);
-            double umbral = double.Parse(txtUmbral.Text);
-
-            SeñalRampa rampa = new SeñalRampa(tiempoInicial, tiempoFinal, umbral);
-
-            plnGrafica.Points.Clear();
-
-            for (double i = tiempoInicial; i <= tiempoFinal; i++)
-            {
-                double valorMuestra = rampa.evaluar(i);
-                rampa.Muestras.Add(new Muestra(i, valorMuestra));
-                
-
-            }
-
-            foreach (Muestra muestra in rampa.Muestras)
-            {
-                plnGrafica.Points.Add(new Point(muestra.X * scrContenedor.Width, (muestra.Y * 
-                    ((scrContenedor.Height / 2.0) - 30) * -1) + (scrContenedor.Height / 2)));
-
-            }
-           
-        }
-
+        
         private void cbTipoSeñal_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (panelConfiguracion != null)
@@ -277,95 +160,8 @@ namespace GraficadorSeñales
             }
            
         }
+        
 
-        private void cbTipoSeñal_SegundaSeñal_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            panelConfiguracion_SegundaSeñal.Children.Clear();
-            switch (cbTipoSeñal_SegundaSeñal.SelectedIndex)
-            {
-                case 0: //Senoidal
-                    panelConfiguracion_SegundaSeñal.Children.Add(new ConfiguracionSeñalSenoidal());
-                    break;
-
-                case 1://Rampa
-                    
-                    break;
-
-                case 2: //Exponencial
-                    panelConfiguracion_SegundaSeñal.Children.Add(new ConfiguracionSeñalExponencial());
-                    break;
-
-                case 3: //Rectangular
-                    break;
-                default:
-
-                    break;
-
-            }
-        }
-
-        private void btnRealizarOperacion_Click(object sender, RoutedEventArgs e)
-        {
-            señalResultado = null;
-            switch (cbTipoOperacion.SelectedIndex)
-            {
-                case 0: //suma
-                    señalResultado = Señal.sumar(señal, segundaSeñal);
-
-                    break;
-                case 1: //multiplicacion
-                    señalResultado = Señal.multiplicar(señal, segundaSeñal);
-
-                    break;
-
-                case 2: //Convolucion
-                    señalResultado = Señal.convolucionar(señal, segundaSeñal);
-                    break;
-                default:
-                    break;
-
-            }
-
-            señalResultado.actualizarAmplitudMaxima();
-
-            plnGraficaResultado.Points.Clear();
-            
-            lblAmplitudMaximaY_Resultado.Text = señalResultado.AmplitudMaxima.ToString("F");
-            lblAmplitudMaximaNegativaY_Resultado.Text = "-" + señalResultado.AmplitudMaxima.ToString("F");
-
-            //PRIMERA SEÑAL
-            if (señalResultado != null)
-            {
-                //Recorre todos los elementos de una coleccion o arreglo
-                foreach (Muestra muestra in señalResultado.Muestras)
-                {
-                    plnGraficaResultado.Points.Add(new Point((muestra.X - señalResultado.TiempoInicial) * 
-                        scrContenedor_Resultado.Width, (muestra.Y / señalResultado.AmplitudMaxima * 
-                        ((scrContenedor_Resultado.Height / 2.0) - 30) * -1) + (scrContenedor_Resultado.Height / 2)));
-
-                }
-
-            }
-            
-            plnEjeXResultado.Points.Clear();
-            //Punto del principio
-            plnEjeXResultado.Points.Add(new Point(0, (scrContenedor_Resultado.Height / 2)));
-            //Punto del final
-            plnEjeXResultado.Points.Add(new Point((señalResultado.TiempoFinal - señalResultado.TiempoInicial) * 
-                scrContenedor_Resultado.Width, (scrContenedor_Resultado.Height / 2)));
-
-            plnEjeYResultado.Points.Clear();
-            //Punto del principio
-            plnEjeYResultado.Points.Add(new Point((0 - señalResultado.TiempoInicial) * scrContenedor_Resultado.Width, 
-                (señalResultado.AmplitudMaxima * ((scrContenedor_Resultado.Height / 2.0) - 30) * -1) + 
-                (scrContenedor_Resultado.Height / 2)));
-            //Punto del final
-            plnEjeYResultado.Points.Add(new Point((0 - señalResultado.TiempoInicial) * scrContenedor_Resultado.Width,
-                (- señalResultado.AmplitudMaxima * ((scrContenedor_Resultado.Height / 2.0) - 30) * -1) + 
-                (scrContenedor_Resultado.Height / 2)));
-
-
-        }
 
         //CHECKBOX'S
         private void cbEscalaAmplitud_Checked(object sender, RoutedEventArgs e)
