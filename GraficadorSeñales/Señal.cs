@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace GraficadorSeñales
 {
@@ -174,6 +175,28 @@ namespace GraficadorSeñales
             return resultado;
 
         }
+
+        public static Señal transformar(Señal señal)
+        {
+            SeñalPersonalizada transformada = new SeñalPersonalizada();
+            transformada.TiempoInicial = señal.TiempoInicial;
+            transformada.TiempoFinal = señal.TiempoFinal;
+            transformada.FrecuenciaMuestreo = señal.FrecuenciaMuestreo;
+
+            for(int k = 0; k < señal.Muestras.Count; k++)
+            {
+                Complex muestra = 0; //convierte a numero complejo
+                for(int n = 0; n < señal.Muestras.Count; n++)
+                {
+                    muestra += señal.Muestras[n].Y * Complex.Exp(-2 * Math.PI * Complex.ImaginaryOne * k * n/señal.Muestras.Count);
+
+                }
+                transformada.Muestras.Add(new Muestra(k,muestra.Magnitude));
+            }
+
+            return transformada;
+        }
+        
 
     }
 

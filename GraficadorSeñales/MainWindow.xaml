@@ -52,7 +52,7 @@
         <TextBlock x:Name="lblAmplitudMaximaY_Resultado" HorizontalAlignment="Left" Margin="397,0,0,411" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" Width="51" Height="25"/>
         <TextBlock x:Name="lblAmplitudMaximaNegativaY_Resultado" HorizontalAlignment="Left" Margin="397,568,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" RenderTransformOrigin="3.787,0.376" Width="51" Height="26"/>
         <TextBlock x:Name="lblAmplitudCero_Resultado" HorizontalAlignment="Left" Margin="421,447,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="24" FontSize="16" Height="21"/>
-        <Button x:Name="btnTransformadaFourier" Content="Transformada de Fourier" HorizontalAlignment="Left" Margin="157,388,0,0" VerticalAlignment="Top" Width="208" Height="39"/>
+        <Button x:Name="btnTransformadaFourier" Content="Transformada de Fourier" HorizontalAlignment="Left" Margin="157,388,0,0" VerticalAlignment="Top" Width="208" Height="39" Click="btnTransformadaFourier_Click"/>
 
     </Grid>
 </Window>

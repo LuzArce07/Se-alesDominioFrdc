@@ -200,7 +200,46 @@ namespace GraficadorSeñales
                 txtUmbral.IsEnabled = false;
             }
         }
-        
+
+        private void btnTransformadaFourier_Click(object sender, RoutedEventArgs e)
+        {
+            Señal transformada = Señal.transformar(señal);
+            transformada.actualizarAmplitudMaxima();
+
+            plnGraficaResultado.Points.Clear();
+
+            lblAmplitudMaximaY_Resultado.Text = transformada.AmplitudMaxima.ToString("F");
+            lblAmplitudMaximaNegativaY_Resultado.Text = "-" + transformada.AmplitudMaxima.ToString("F");
+
+            //PRIMERA SEÑAL
+            if (transformada != null)
+            {
+                //Recorre todos los elementos de una coleccion o arreglo
+                foreach (Muestra muestra in transformada.Muestras)
+                {
+                    plnGraficaResultado.Points.Add(new Point((muestra.X - transformada.TiempoInicial) * scrContenedor_Resultado.Width, (muestra.Y /
+                        transformada.AmplitudMaxima * ((scrContenedor_Resultado.Height / 2.0) - 30) * -1) +
+                        (scrContenedor_Resultado.Height / 2)));
+
+                }
+
+            }
+
+            plnEjeXResultado.Points.Clear();
+            //Punto del principio
+            plnEjeXResultado.Points.Add(new Point(0, (scrContenedor_Resultado.Height / 2)));
+            //Punto del final
+            plnEjeXResultado.Points.Add(new Point((transformada.TiempoFinal - transformada.TiempoInicial) * scrContenedor_Resultado.Width,
+                (scrContenedor_Resultado.Height / 2)));
+
+            plnEjeYResultado.Points.Clear();
+            //Punto del principio
+            plnEjeYResultado.Points.Add(new Point((0 - transformada.TiempoInicial) * scrContenedor_Resultado.Width, (transformada.AmplitudMaxima *
+                ((scrContenedor_Resultado.Height / 2.0) - 30) * -1) + (scrContenedor_Resultado.Height / 2)));
+            //Punto del final
+            plnEjeYResultado.Points.Add(new Point((0 - transformada.TiempoInicial) * scrContenedor_Resultado.Width, (-transformada.AmplitudMaxima *
+                ((scrContenedor_Resultado.Height / 2.0) - 30) * -1) + (scrContenedor_Resultado.Height / 2)));
+        }
     }
 
 }
