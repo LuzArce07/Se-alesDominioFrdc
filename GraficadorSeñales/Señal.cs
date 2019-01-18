@@ -191,13 +191,15 @@ namespace GraficadorSeñales
                     muestra += señal.Muestras[n].Y * Complex.Exp(-2 * Math.PI * Complex.ImaginaryOne * k * n/señal.Muestras.Count);
 
                 }
-                transformada.Muestras.Add(new Muestra(k,muestra.Magnitude));
+
+                transformada.Muestras.Add(new Muestra((double)k / (double)señal.Muestras.Count, muestra.Magnitude));
+
             }
 
             return transformada;
+
         }
         
-
     }
 
 }
