@@ -189,6 +189,7 @@ namespace GraficadorSeñales
                 double valorMaximo = 0;
                 int indiceMaximo = 0;
                 int indiceActual = 0;
+
                 foreach(Muestra muestra in transformada.Muestras)
                 {
                     if (muestra.Y > valorMaximo)
@@ -206,7 +207,13 @@ namespace GraficadorSeñales
 
                 }
 
+                double frecuenciaFundamental = ((double)indiceMaximo * señal.FrecuenciaMuestreo) / (double)transformada.Muestras.Count;
+
+                lblFrecuenciaFundamental.Text = frecuenciaFundamental.ToString() + " Hz";
+
             }
+             
+            
 
             plnEjeXResultado.Points.Clear();
             //Punto del principio
